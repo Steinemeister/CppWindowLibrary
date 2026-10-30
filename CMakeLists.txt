@@ -1,42 +1,34 @@
-cmake_minimum_required(VERSION 3.16)
-project(CppWindowLibrary VERSION 0.1.0 LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.14)
+project(CppWindowLibrary VERSION 1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
 
-find_package(glfw3 REQUIRED)
+# 1. GLFW via FetchContent holen
+include(FetchContent)
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
 
-if(TARGET glfw)
-    set(GLFW_TARGET glfw)
-elseif(TARGET glfw3)
-    set(GLFW_TARGET glfw3)
-elseif(TARGET glfw3::glfw)
-    set(GLFW_TARGET glfw3::glfw)
-else()
-    message(FATAL_ERROR "Found glfw3 but no supported CMake target was exported")
-endif()
+FetchContent_Declare(
+    glfw
+    GIT_REPOSITORY https://github.com/glfw/glfw
+    GIT_TAG        3.4
+)
+FetchContent_MakeAvailable(glfw)
 
-add_library(CppWindowLibrary
-    src/Window.cpp
-    src/WindowManager.cpp
+# 2. Die Library selbst erstellen (Aus dem src-Ordner)
+add_library(EasyWindow STATIC 
+    src/EasyWindow.h
+    src/EasyWindow.cpp
 )
 
-target_include_directories(CppWindowLibrary
-    PUBLIC
-        ${PROJECT_SOURCE_DIR}/include
-)
+# GLFW mit deiner Library verknüpfen
+target_link_libraries(EasyWindow PUBLIC glfw)
 
-target_link_libraries(CppWindowLibrary
-    PUBLIC
-        ${GLFW_TARGET}
-)
+# Suchpfade für Header-Dateien definieren (damit das Beispiel die .hpp findet)
+target_include_directories(EasyWindow PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-add_executable(multiwindow_demo
-    examples/multiwindow_demo.cpp
-)
-
-target_link_libraries(multiwindow_demo
-    PRIVATE
-        CppWindowLibrary
-)
+# 3. Den Beispiel-Ordner für die Executable hinzufügen
+add_subdirectory(example)

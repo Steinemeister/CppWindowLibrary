@@ -5,6 +5,10 @@
 #include <memory>
 #include <functional>
 
-void init();
-void close();
-bool shouldClose();
+namespace EasyWindow
+{
+    void init();
+    void close();
+    void requestClose();
+    bool shouldClose();
+}

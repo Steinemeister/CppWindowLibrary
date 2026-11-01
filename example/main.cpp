@@ -5,7 +5,6 @@ int main()
 {
     EasyWindow::init();
 
-    // Einmalig das Terminal leeren, damit die Formatierung sauber greift
     #ifdef _WIN32
         std::system("cls");
     #else
@@ -17,6 +16,10 @@ int main()
         EasyWindow::GetEvents(EasyWindow::EventGettingMode::Poll);
 
         if (EasyWindow::isKeyPressed(GLFW_KEY_ESCAPE))
+        {
+            EasyWindow::requestClose();
+        }
+        if (EasyWindow::isControllerPresent(GLFW_JOYSTICK_1) && EasyWindow::isControllerButtonPressed(GLFW_JOYSTICK_1, GLFW_GAMEPAD_BUTTON_BACK))
         {
             EasyWindow::requestClose();
         }

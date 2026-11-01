@@ -20,7 +20,6 @@ namespace EasyWindow
         int paddingLeft;
         int paddingRight;
 
-        // Der Constructor läuft dank constexpr komplett im Compiler ab
         constexpr BoxLayout() : width(0), paddingLeft(0), paddingRight(0)
         {
             int textLength = static_cast<int>(TITLE.length());
@@ -68,6 +67,28 @@ namespace EasyWindow
         std::cout << std::fixed << std::setprecision(1);
         std::cout << "  Position: X: " << std::setw(6) << getMouseX()
                   << " Y: " << std::setw(6) << getMouseY() << "    \n";
+
+        static double displayScrollX = 0.0;
+        static double displayScrollY = 0.0;
+
+        double currentX = getScrollX();
+        double currentY = getScrollY();
+
+        // Wenn in diesem Frame gescrollt wurde, nimm den neuen Wert
+        if (currentX != 0.0) displayScrollX = currentX;
+        if (currentY != 0.0) displayScrollY = currentY;
+
+        // Zeige den geglätteten/gehaltenen Wert an
+        std::cout << "  Scroll:   X: " << std::setw(6) << displayScrollX
+                  << " Y: " << std::setw(6) << displayScrollY << "    \n";
+
+        // Lass den Wert langsam gegen 0 wandern (Interpolation), damit er nicht sofort wegspringt
+        displayScrollX *= 0.9; 
+        displayScrollY *= 0.9;
+
+        // Schneide winzige Werte ab, um permanentes "0.0" zu garantieren
+        if (std::abs(displayScrollX) < 0.05) displayScrollX = 0.0;
+        if (std::abs(displayScrollY) < 0.05) displayScrollY = 0.0;
     }
 
     static void printSingleController(int jid)

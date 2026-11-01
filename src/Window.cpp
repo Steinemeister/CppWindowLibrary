@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "Mouse_Internal.h"
 #include <iostream>
 
 namespace EasyWindow
@@ -22,6 +23,7 @@ namespace EasyWindow
             glfwTerminate();
             return;
         }
+        Internal::InitMouseCallbacks(window);
 
         glfwMakeContextCurrent(window);
     }
@@ -51,6 +53,8 @@ namespace EasyWindow
 
     void GetEvents(EventGettingMode mode)
     {
+        Internal::ResetScrollDeltas();
+
         if (mode == EventGettingMode::Poll)
         {
             glfwPollEvents();

@@ -21,7 +21,16 @@ FetchContent_MakeAvailable(glfw)
 # 2. Die Library selbst erstellen (Aus dem src-Ordner)
 add_library(EasyWindow STATIC 
     src/EasyWindow.h
-    src/EasyWindow.cpp
+    src/Window.h
+    src/Window.cpp
+    src/Keyboard.h
+    src/Keyboard.cpp
+    src/Mouse.h
+    src/Mouse.cpp
+    src/Controller.h
+    src/Controller.cpp
+    src/Debug.h
+    src/Debug.cpp
 )
 
 # GLFW mit deiner Library verknüpfen

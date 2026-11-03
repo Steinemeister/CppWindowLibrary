@@ -3,28 +3,41 @@
 
 int main()
 {
-    EasyWindow::init();
+    EasyWindow::init({.width = 1280,
+                      .height = 720,
+                      .title = "Custom window",
+                      .resizable = true});
 
-    #ifdef _WIN32
-        std::system("cls");
-    #else
-        std::system("clear");
-    #endif
+#ifdef _WIN32
+    std::system("cls");
+#else
+    std::system("clear");
+#endif
 
     while (!EasyWindow::shouldClose())
     {
+        static bool F11Pressed = false;
+
         EasyWindow::GetEvents(EasyWindow::EventGettingMode::Poll);
 
         if (EasyWindow::isKeyPressed(GLFW_KEY_ESCAPE))
         {
             EasyWindow::requestClose();
         }
-        if (EasyWindow::isControllerPresent(GLFW_JOYSTICK_1) && EasyWindow::isControllerButtonPressed(GLFW_JOYSTICK_1, GLFW_GAMEPAD_BUTTON_BACK))
+        if (EasyWindow::isKeyPressed(GLFW_KEY_F11))
         {
-            EasyWindow::requestClose();
+            if (!F11Pressed)
+            {
+                EasyWindow::setFullscreen(!EasyWindow::isFullscreen());
+            }
+            F11Pressed = true;
+        }
+        else
+        {
+            F11Pressed = false;
         }
 
-        EasyWindow::debugPrintAllInput(); 
+        EasyWindow::debugPrintAllInput();
     }
 
     EasyWindow::close();

@@ -48,6 +48,30 @@ namespace EasyWindow
         std::cout << "\n";
     }
 
+    static void printWindowSection()
+    {
+        std::cout << "[WINDOW]\n";
+        std::cout << "  Size:       " << std::setw(4) << getWidth() << " x " << std::setw(4) << getHeight() << " Pixels\n";
+        std::cout << "  State:      Fullscreen: " << formatBtn(isFullscreen()) 
+                  << " | Resizable: " << formatBtn(isResizable()) << "\n";
+
+        // Resize-Event für ein paar Frames über die Checkbox halten
+        static int resizeDisplayTimer = 0;
+        if (wasResized())
+        {
+            resizeDisplayTimer = 15;
+        }
+
+        // Steuert das [X] oder [ ] basierend auf dem Timer
+        bool showResized = (resizeDisplayTimer > 0);
+        if (showResized)
+        {
+            resizeDisplayTimer--;
+        }
+
+        std::cout << "  Event:      Resized: " << formatBtn(showResized) << "                                       \n";
+    }
+
     static void printKeyboardSection()
     {
         std::cout << "[KEYBOARD]\n";
@@ -153,13 +177,15 @@ namespace EasyWindow
     {
         std::cout << "\033[H"; // Cursor nach oben links setzen
 
-        // --- DER TITEL-KASTEN (Blitzschnell, da alle Breiten schon feststehen) ---
         printLine('=');
         std::cout << "# " << std::string(LAYOUT.paddingLeft, ' ') << TITLE
                   << std::string(LAYOUT.paddingRight, ' ') << " #\n";
         printLine('=');
 
         // --- DIE UNTERBEREICHE ---
+        printWindowSection();
+        printLine('-');
+
         printKeyboardSection();
         printLine('-');
 

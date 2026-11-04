@@ -38,6 +38,28 @@ Include the umbrella header:
 #include "EasyWindow.h"
 ```
 
+Small usage snippet:
+
+```cpp
+#include "EasyWindow.h"
+#include <GLFW/glfw3.h>
+
+int main() {
+    EasyWindow::init();
+
+    while (!EasyWindow::shouldClose()) {
+        EasyWindow::GetEvents(EasyWindow::EventGettingMode::Poll);
+
+        if (EasyWindow::isKeyPressed(GLFW_KEY_SPACE)) {
+            EasyWindow::debugPrintAllInput();
+        }
+    }
+
+    EasyWindow::close();
+    return 0;
+}
+```
+
 Basic loop:
 
 ```cpp

@@ -4,6 +4,8 @@ project(CppWindowLibrary VERSION 1.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+find_package(Vulkan REQUIRED)
+
 # 1. GLFW via FetchContent holen
 include(FetchContent)
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
@@ -32,9 +34,7 @@ add_library(EasyWindow STATIC
     src/Debug.h
     src/Debug.cpp
 )
-
-# GLFW mit deiner Library verknüpfen
-target_link_libraries(EasyWindow PUBLIC glfw)
+target_link_libraries(EasyWindow PUBLIC glfw Vulkan::Vulkan)
 
 # Suchpfade für Header-Dateien definieren (damit das Beispiel die .hpp findet)
 target_include_directories(EasyWindow PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

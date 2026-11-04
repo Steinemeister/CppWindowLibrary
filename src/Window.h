@@ -1,6 +1,9 @@
 #pragma once
 #include <string_view>
+#include <vector>
+#define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+
 
 namespace EasyWindow
 {
@@ -36,5 +39,10 @@ namespace EasyWindow
     int getHeight();
     bool wasResized();
 
-    const GLFWwindow *getWindowHandle();
+    GLFWwindow *getWindowHandle();
+
+    std::vector<const char *> getRequiredVulkanExtensions();
+    VkResult createVulkanSurface(VkInstance instance, const VkAllocationCallbacks* allocator, VkSurfaceKHR* surface);
+
+    bool isVulkanSupported();
 }

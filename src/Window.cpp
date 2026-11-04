@@ -1,6 +1,7 @@
 #include "Window.h"
 #include "Mouse_Internal.h"
 #include <iostream>
+#include <vector>
 
 namespace EasyWindow
 {
@@ -81,6 +82,7 @@ namespace EasyWindow
     void GetEvents(EventGettingMode mode)
     {
         Internal::ResetScrollDeltas();
+        resizedLastFrame = false;
 
         if (mode == EventGettingMode::Poll)
         {
@@ -90,7 +92,6 @@ namespace EasyWindow
         {
             glfwWaitEvents();
         }
-        resizedLastFrame = false;
     }
 
     void setFullscreen(bool enabled)
@@ -143,25 +144,53 @@ namespace EasyWindow
         return glfwGetWindowAttrib(window, GLFW_RESIZABLE) == GLFW_TRUE;
     }
 
-    int getWidth() 
-    { 
-        if (!window) return 0;
+    int getWidth()
+    {
+        if (!window)
+            return 0;
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
-        return width; 
+        return width;
     }
 
-    int getHeight() 
-    { 
-        if (!window) return 0;
+    int getHeight()
+    {
+        if (!window)
+            return 0;
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
-        return height; 
+        return height;
+    }
+
+    std::vector<const char *> getRequiredVulkanExtensions()
+    {
+        uint32_t glfwExtensionCount = 0;
+        const char **glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+        if (!glfwExtensions)
+        {
+            return {};
+        }
+
+        return std::vector<const char *>(glfwExtensions, glfwExtensions + glfwExtensionCount);
+    }
+
+    VkResult createVulkanSurface(VkInstance instance, const VkAllocationCallbacks *allocator, VkSurfaceKHR *surface)
+    {
+        if (!window)
+            return VK_ERROR_INITIALIZATION_FAILED;
+
+        return glfwCreateWindowSurface(instance, window, allocator, surface);
+    }
+
+    bool isVulkanSupported()
+    {
+        return glfwVulkanSupported() == GLFW_TRUE;
     }
 
     bool wasResized() { return resizedLastFrame; }
 
-    const GLFWwindow *getWindowHandle()
+    GLFWwindow *getWindowHandle()
     {
         return window;
     }
